@@ -28,29 +28,32 @@ export class AuthController {
   }
 
   @Post('login')
-  @RateLimit(10)
+  @RateLimit(20)
   login(@Body() dto: Login) {
     return this.authService.login(dto);
   }
 
   @Post('refresh')
+  @RateLimit(30)
   refresh(@Body('refreshToken') token: string) {
     return this.authService.refresh(token);
   }
 
   @Post('logout')
+  @RateLimit(30)
   logout(@Body('refreshToken') token: string) {
     return this.authService.logout(token);
   }
 
   @Get('profile')
+  @RateLimit(60)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER)
   profile(@Req() req) {
     return this.authService.getProfile(req.user.userId);
   }
 
   @Put('profile/:id')
+  @RateLimit(100)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   editProfile(@Param('id') id: string, @Body() body) {
